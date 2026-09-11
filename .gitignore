@@ -1,0 +1,13 @@
+.DS_Store
+*.pyc
+__pycache__/
+.env
+.env.*
+*.log
+*.zip
+*.tar
+*.tar.gz
+checkpoint.json
+reviews/
+artifacts/
+.browser-profile/
