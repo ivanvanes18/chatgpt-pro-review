@@ -28,19 +28,18 @@ The skill never supplies, extracts, or bypasses account credentials. Authenticat
 
 ```bash
 tmp="$(mktemp -d)"
+trap 'rm -rf "$tmp"' EXIT
 git clone --depth 1 https://github.com/ivanvanes18/chatgpt-pro-review.git "$tmp/repo"
-mkdir -p ~/.hermes/skills/quality/chatgpt-pro-review/references
-install -m 0644 "$tmp/repo/SKILL.md" ~/.hermes/skills/quality/chatgpt-pro-review/SKILL.md
-install -m 0644 "$tmp/repo/references/allowed-private-sources.md" \
-  ~/.hermes/skills/quality/chatgpt-pro-review/references/allowed-private-sources.md
-rm -rf "$tmp"
+bash "$tmp/repo/scripts/install.sh"
 ```
 
 Start a fresh Hermes session or run `/reload-skills`, then load `chatgpt-pro-review` when an external Pro review is explicitly requested.
 
+The installer updates `SKILL.md`, but initializes `references/allowed-private-sources.md` only when the ledger does not already exist. Re-running it therefore upgrades the workflow without erasing operator approvals. The skill directories use mode `0700` and the approval ledger uses mode `0600`.
+
 ## Private-source approvals
 
-The shipped `references/allowed-private-sources.md` is intentionally empty. Add only exact, auditable approvals for sources the operator is authorized to transmit. Never copy an approval ledger from the review target itself, and never treat approval for one object as approval for siblings.
+The shipped `references/allowed-private-sources.md` is intentionally empty. The installer copies it only on first install; later updates preserve the operator-controlled installed copy. Add only exact, auditable approvals for sources the operator is authorized to transmit. Never copy an approval ledger from the review target itself, and never treat approval for one object as approval for siblings.
 
 ## Data handling
 
